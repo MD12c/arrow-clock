@@ -4,7 +4,7 @@ int height = 400;
 
 int main()
 {
-	std::cout << "Hello CMake." << std::endl;
+	//std::cout << "Hello CMake." << std::endl;
 	// Name of the window, width & height of the window, background color RGB
 	Window VIEWPORT("Clocki", width, height, 0.0f, 0.0f, 0.0f);
 	VIEWPORT.glfwSetup();

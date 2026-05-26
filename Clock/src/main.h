@@ -20,6 +20,7 @@
 // #include<stdexcept>
 // #include<vector>
 // #include"Benchmarks/Instrumentatior.h"
+#pragma comment(linker, "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
 
 #include"Graphics/Window.h"
 #include"Graphics/ShaderClass.h"
