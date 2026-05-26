@@ -4,8 +4,8 @@ int height = 400;
 
 int main()
 {
-	//std::cout << "Hello CMake." << std::endl;
-	// Name of the window, width & height of the window, background color RGB
+	// std::cout << "Hello CMake." << std::endl;
+	//  Name of the window, width & height of the window, background color RGB
 	Window VIEWPORT("Clocki", width, height, 0.0f, 0.0f, 0.0f);
 	VIEWPORT.glfwSetup();
 
@@ -147,7 +147,6 @@ int main()
 
 // Time
 #pragma region
-		glUniform1i(useTextureLoc, 0);
 		auto now = std::chrono::system_clock::now();
 		std::time_t t = std::chrono::system_clock::to_time_t(now);
 		std::tm localTimeBuf;
@@ -155,6 +154,8 @@ int main()
 		std::tm *localTime = &localTimeBuf;
 		int hours = localTime->tm_hour;	 // 0-23
 		int minutes = localTime->tm_min; // 0-59
+		if (hours > 12)
+			hours = hours - 12;
 #pragma endregion
 
 		bindClocki();
@@ -165,7 +166,9 @@ int main()
 		unbindClocki();
 
 		bindMinutes();
-		MinuteHandMat4 = glm::rotate(model, glm::radians(-(GLfloat)(minutes / 60.0f) * 360.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniform1i(useTextureLoc, 0);
+		GLfloat angleM = -(GLfloat)(minutes / 60.0f) * 360.0f;
+		MinuteHandMat4 = glm::rotate(model, glm::radians(angleM), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniform3fv(colorLoc, 1, glm::value_ptr(glm::vec3(0.1f, 0.1f, 0.1f)));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(MinuteHandMat4));
 		glDrawArrays(GL_LINES, 0, 3);
@@ -173,7 +176,8 @@ int main()
 
 		bindHours();
 		glUniform1i(useTextureLoc, 0);
-		HourHandMat4 = glm::rotate(model, glm::radians(-(GLfloat)(hours / 24.0f) * 360.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		GLfloat angleH = -(((GLfloat)(hours) / 12.0f) * 360.0f) - (GLfloat)(minutes / 60.0f) * 30;
+		HourHandMat4 = glm::rotate(model, glm::radians(angleH), glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniform3fv(colorLoc, 1, glm::value_ptr(glm::vec3(0.7f, 0.0f, 0.0f)));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(HourHandMat4));
 		glDrawArrays(GL_LINES, 0, 3);
