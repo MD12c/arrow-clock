@@ -139,6 +139,10 @@ int main()
 	};
 #pragma endregion
 
+static int hours;
+static int minutes;
+static int minutesPrev;
+
 	while (!glfwWindowShouldClose(VIEWPORT.getWindow()))
 	{
 		VIEWPORT.glClearCurrentColor();
@@ -152,11 +156,27 @@ int main()
 		std::tm localTimeBuf;
 		localtime_s(&localTimeBuf, &t);
 		std::tm *localTime = &localTimeBuf;
-		int hours = localTime->tm_hour;	 // 0-23
-		int minutes = localTime->tm_min; // 0-59
+		hours = localTime->tm_hour;	 // 0-23
+		minutes = localTime->tm_min; // 0-59
 		if (hours > 12)
 			hours = hours - 12;
 #pragma endregion
+
+		double mouseX, mouseY;
+		glfwGetCursorPos(VIEWPORT.getWindow(), &mouseX, &mouseY);
+		int margin = 10;
+		if ((mouseX >= margin) && (mouseX - margin < width) && (mouseY >= -40) && (mouseY < height + margin))
+		{
+			glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_TRUE);
+		}
+		else
+		{
+			glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_FALSE);
+		}
+		glfwPollEvents();
+		if(minutes == minutesPrev)
+			continue;
+		minutesPrev = minutes;
 
 		bindClocki();
 		glUniform1i(useTextureLoc, 1);
@@ -183,24 +203,12 @@ int main()
 		glDrawArrays(GL_LINES, 0, 3);
 		unbindHours();
 
-		double mouseX, mouseY;
-		glfwGetCursorPos(VIEWPORT.getWindow(), &mouseX, &mouseY);
-		int margin = 10;
-		if ((mouseX >= margin) && (mouseX - margin < width) && (mouseY >= -40) && (mouseY < height + margin))
-		{
-			glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_TRUE);
-		}
-		else
-		{
-			glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_FALSE);
-		}
 
 		// ImGui::Begin("Template");
 		// 	ImGui::ShowDemoWindow();
 		// ImGui::End();
 		// imgui.RenderDockSpace();
 		glfwSwapBuffers(VIEWPORT.getWindow());
-		glfwPollEvents();
 	}
 	// ImGui_ImplOpenGL3_Shutdown();
 	// ImGui_ImplGlfw_Shutdown();
