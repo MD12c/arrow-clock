@@ -6,6 +6,7 @@ int main()
 {
 	// std::cout << "Hello CMake." << std::endl;
 	//  Name of the window, width & height of the window, background color RGB
+	// #define _GLFW_WIN32
 	Window VIEWPORT("Clocki", width, height, 0.0f, 0.0f, 0.0f);
 	VIEWPORT.glfwSetup();
 
@@ -101,6 +102,9 @@ int main()
 	MinutesVAO.LinkAttrib(MinutesVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void *)0);
 	glLineWidth(3.5f);
 	glEnable(GL_LINE_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	auto bindMinutes = [&]()
 	{
@@ -124,8 +128,6 @@ int main()
 	VBO HoursVBO(HourHand, sizeof(HourHand));
 	HoursVBO.Bind();
 	HoursVAO.LinkAttrib(HoursVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void *)0);
-	glLineWidth(3.5f);
-	glEnable(GL_LINE_SMOOTH);
 
 	auto bindHours = [&]()
 	{
@@ -139,12 +141,13 @@ int main()
 	};
 #pragma endregion
 
-static int hours;
-static int minutes;
-static int minutesPrev;
+	static int hours;
+	static int minutes;
+	static int minutesPrev;
 
 	while (!glfwWindowShouldClose(VIEWPORT.getWindow()))
 	{
+		glfwPollEvents();
 		VIEWPORT.glClearCurrentColor();
 		// imgui.ShowDockSpace();
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -171,12 +174,11 @@ static int minutesPrev;
 		}
 		else
 		{
-			glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_FALSE);
+			//glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_FALSE);
+			if (minutes == minutesPrev)
+				continue;
+			minutesPrev = minutes;
 		}
-		glfwPollEvents();
-		if(minutes == minutesPrev)
-			continue;
-		minutesPrev = minutes;
 
 		bindClocki();
 		glUniform1i(useTextureLoc, 1);
@@ -202,7 +204,6 @@ static int minutesPrev;
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(HourHandMat4));
 		glDrawArrays(GL_LINES, 0, 3);
 		unbindHours();
-
 
 		// ImGui::Begin("Template");
 		// 	ImGui::ShowDemoWindow();

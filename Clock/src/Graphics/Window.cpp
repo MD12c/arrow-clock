@@ -26,6 +26,17 @@ void Window::glfwSetup() {
 		throw std::runtime_error("Failed to create GLFW window");
 	}
 	glfwMakeContextCurrent(m_window);
+
+	GLFWimage images[1];
+	images[0].width  = 32;
+	images[0].height = 32;
+
+	images[0].pixels = stbi_load("Assets/Textures/clock2.png", &images[0].width, &images[0].height, 0, 4);
+	if (images[0].pixels) {
+		glfwSetWindowIcon(m_window, 1, images);
+		stbi_image_free(images[0].pixels);
+	}
+
 	gladLoadGL();
 	glViewport(0, 0, m_width, m_height);
 	glClearColor(m_RED, m_GREEN, m_BLUE, 1.0f);
