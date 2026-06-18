@@ -174,7 +174,7 @@ int main()
 		}
 		else
 		{
-			//glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_FALSE);
+			glfwSetWindowAttrib(VIEWPORT.getWindow(), GLFW_DECORATED, GLFW_FALSE);
 			if (minutes == minutesPrev)
 				continue;
 			minutesPrev = minutes;
